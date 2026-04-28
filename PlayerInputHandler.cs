@@ -14,14 +14,20 @@ public class PlayerInputHandler : MonoBehaviour
     [SerializeField] private string rotation = "Rotation";
     [SerializeField] private string jump = "Jump";
     [SerializeField] private string sprint = "Sprint";
+    [SerializeField] private string fire = "Fire";
+    [SerializeField] private string toggleWeapon = "ToggleWeapon";
     [SerializeField] private string rotateObject = "RotateObject"; //ini
+    [SerializeField] private string reload = "Reload";
 
 
     private InputAction movementAction;
     private InputAction rotationAction;
     private InputAction jumpAction;
     private InputAction sprintAction;
+    private InputAction fireAction;
+    private InputAction toggleWeaponAction;
     private InputAction rotateObjectAction; //ini
+    private InputAction reloadAction;
 
 
 
@@ -29,7 +35,10 @@ public class PlayerInputHandler : MonoBehaviour
     public Vector2 RotationInput { get; private set; }
     public bool JumpTriggered { get; private set; }
     public bool SprintTriggered { get; private set; }
+    public bool FireTriggered { get; private set; }
+    public bool ToggleWeaponTriggered { get; private set; }
     public bool RotateObjectTriggered { get; private set; }
+    public bool ReloadTriggered { get; private set; }
 
 
     private void Awake()
@@ -40,7 +49,10 @@ public class PlayerInputHandler : MonoBehaviour
         rotationAction = mapReference.FindAction(rotation);
         jumpAction = mapReference.FindAction(jump);
         sprintAction = mapReference.FindAction(sprint);
+        fireAction = mapReference.FindAction(fire);
+        toggleWeaponAction = mapReference.FindAction(toggleWeapon);
         rotateObjectAction = mapReference.FindAction(rotateObject);
+        reloadAction = mapReference.FindAction(reload);
         SubscribeActionValuesToInputEvents();
     }
 
@@ -55,11 +67,20 @@ public class PlayerInputHandler : MonoBehaviour
         jumpAction.performed += inputInfo => JumpTriggered = true;
         jumpAction.canceled += inputInfo => JumpTriggered = false;
 
+        sprintAction.performed += inputInfo => SprintTriggered = true;
+        sprintAction.canceled += inputInfo => SprintTriggered = false;
+
         rotateObjectAction.performed += _ => RotateObjectTriggered = true;
         rotateObjectAction.canceled += _ => RotateObjectTriggered = false;
 
-        sprintAction.performed += inputInfo => SprintTriggered = true;
-        sprintAction.canceled += inputInfo => SprintTriggered = false;
+        fireAction.performed += _ => FireTriggered = true;
+        fireAction.canceled += _ => FireTriggered = false;
+
+        toggleWeaponAction.performed += _ => ToggleWeaponTriggered = true;
+        toggleWeaponAction.canceled += _ => ToggleWeaponTriggered = false;
+
+        reloadAction.performed += _ => ReloadTriggered = true;
+        reloadAction.canceled += _ => ReloadTriggered = false;
 
     }
 
@@ -68,6 +89,12 @@ public class PlayerInputHandler : MonoBehaviour
     /// This prevents external classes from needing write access to the property setter.
     /// </summary>
 
+    public bool ConsumeToggleWeaponTriggered()
+    {
+        if (!ToggleWeaponTriggered) return false;
+        ToggleWeaponTriggered = false;
+        return true;
+    }
 
     private void OnEnable()
     {
